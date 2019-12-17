@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-let baseUrl = 'http://192.168.1.2:5000'
+let baseUrl = 'http://127.0.0.1:5000'
 
 axios.defaults.withCredentials = true
 

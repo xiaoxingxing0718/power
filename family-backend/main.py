@@ -19,7 +19,10 @@ def create_app():
     CORS(app, supports_credentials=True, resources=r'/*')
 
     from app.task.plane import plane
-    app.register_blueprint(plane,url_prefix="/plane")
+    app.register_blueprint(plane, url_prefix="/plane")
+
+    from app.task.work import work
+    app.register_blueprint(work, url_prefix="/work")
     return app
 
 

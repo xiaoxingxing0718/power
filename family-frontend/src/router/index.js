@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import headTop from '../components/headTop'
 import manage from '../page/manage'
 import login from '../page/login'
+import workregister from '../page/workregister'
 import fundlist from '../page/fundData/fundlist'
 import plane from '../page/tickets/plane'
 
@@ -13,6 +14,10 @@ export default new Router({
     {
       path: '/',
       component: login
+    },
+    {
+      path: '/workregister',
+      component: workregister
     },
     {
       path: '/manage',

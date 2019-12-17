@@ -124,14 +124,24 @@ export default {
     };
   },
   methods: {
+
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log('1999...')
+          var d1 = this.ruleForm.date1
+          var d2 = this.ruleForm.date2
+          var depDate =d1.getFullYear() + '-' + (d1.getMonth()+1) + '-' +d1.getDate()
+          var arrDate =d2.getFullYear() + '-' + (d2.getMonth()+1) + '-' +d2.getDate()
+          //console.log(depDate)
           //alert("submit!");
           axios.get(baseUrl+'/plane/searchAirtickets',{
             params:{
-              name:'wxx'
+              depCity: this.ruleForm.start,
+              arrCity: this.ruleForm.arrive,
+              depDate: depDate,
+              arrDate: arrDate,
+              planetype: this.ruleForm.planetype
             }
           })
           .then((res) => {
