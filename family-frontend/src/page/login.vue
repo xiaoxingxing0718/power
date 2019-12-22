@@ -1,197 +1,88 @@
 <template>
-  <div class="fill">
-    <head-top></head-top>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="0"
-      class="demo-ruleForm"
-    >
-
-      <el-form-item label="出发城市" prop="start" required>
-        <el-col :span="11">
-          <el-input v-model="ruleForm.start"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="到达城市" prop="arrive" required>
-        <el-col :span="11">
-          <el-input v-model="ruleForm.arrive"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="航程类型" prop="planetype">
-        <el-radio-group v-model="ruleForm.planetype">
-          <el-radio label="单程"></el-radio>
-          <el-radio label="往返"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="出发日期" required>
-        <el-col :span="11">
-          <el-form-item prop="date1">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="ruleForm.date1"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="返程日期" required>
-        <el-col :span="11">
-          <el-form-item prop="date2">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="ruleForm.date2"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="平台类型4" prop="type">
-        <el-col :span="11">
-          <el-checkbox-group v-model="ruleForm.type">
-            <el-checkbox label="飞猪" name="type"></el-checkbox>
-            <el-checkbox label="京东旅行" name="type"></el-checkbox>
-            <el-checkbox label="美团" name="type"></el-checkbox>
-            <el-checkbox label="携程" name="type"></el-checkbox>
-            <el-checkbox label="去哪儿网" name="type"></el-checkbox>
-            <el-checkbox label="途牛" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-col>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="login_page">
+  <el-form
+    :model="ruleForm2"
+    status-icon
+    :rules="rules2"
+    ref="ruleForm2"
+    label-width="100px"
+    class="demo-ruleForm"
+  >
+    <el-form-item label="密码" prop="pass">
+      <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="确认密码" prop="checkPass">
+      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="年龄" prop="age">
+      <el-input v-model.number="ruleForm2.age"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
+      <el-button @click="resetForm('ruleForm2')">重置</el-button>
+    </el-form-item>
+  </el-form>
   </div>
 </template>
 <script>
-import headTop from "../components/headTop";
-import {axios,baseUrl} from "../api/api";
-import { location } from "../location";
-
 export default {
   data() {
+    var checkAge = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("年龄不能为空"));
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error("请输入数字值"));
+        } else {
+          if (value < 18) {
+            callback(new Error("必须年满18岁"));
+          } else {
+            callback();
+          }
+        }
+      }, 1000);
+    };
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.ruleForm2.checkPass !== "") {
+          this.$refs.ruleForm2.validateField("checkPass");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.ruleForm2.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
-      ruleForm: {
-        start: "",
-        arrive: "",
-        date1: "",
-        date2: "",
-        planetype: "",
-        type: [],
+      ruleForm2: {
+        pass: "",
+        checkPass: "",
+        age: ""
       },
-      rules: {
-        start: [
-          { required: true, message: "请输入出发城市", trigger: "blur" },
-        ],
-        arrive: [
-          { required: true, message: "请选择到达城市", trigger: "change" }
-        ],
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个平台类型",
-            trigger: "change"
-          }
-        ],
-        planetype: [
-          { required: true, message: "请选择航程类型", trigger: "change" }
-        ]
+      rules2: {
+        pass: [{ validator: validatePass, trigger: "blur" }],
+        checkPass: [{ validator: validatePass2, trigger: "blur" }],
+        age: [{ validator: checkAge, trigger: "blur" }]
       }
     };
   },
-
-  mounted() {
-    this.getLocation(); // 调用获取地理位置
-},
-
   methods: {
-     getLocation() {
-      let _that = this;
-      let geolocation = location.initMap("map-container"); //定位
-      console.log('get location...')
-      console.log(geolocation)
-      geolocation.getCurrentPosition(function(status,result){
-            if(status=='complete'){
-                console.log('1111111223wxx')
-                console.log(result.position)
-                console.log(result.accuracy)
-                console.log(result.location_type)
-                console.log(result.message)
-                console.log(result.addressComponent)
-                console.log(result.formattedAddress)
-                _that.ruleForm.start = result.message
-                //console.log(result.accuracy)
-
-            }else{
-                console.log(7776)
-                console.log(result.info)
-                console.log(result.message)
-                _that.ruleForm.start = result.message
-                console.log(556688)
-                console.log(_that.ruleForm.start)
-                //onError(result)
-            }
-        })
-      //AMap.event.addListener(geolocation, "complete", result => {
-       // _that.lat = result.position.lat;
-        //_that.lng = result.position.lng;
-       // _that.province = result.addressComponent.province;
-        //_that.city = result.addressComponent.city;
-        //_that.district = result.addressComponent.district;
-        //console.log('22222')
-        //console.log(_that.lat)
-      //});
-      //AMap.event.addListener(geolocation, 'complete', onComplete);
-      //AMap.event.addListener(geolocation, 'error', onError)
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log('1999...')
-          var d1 = this.ruleForm.date1
-          var d2 = this.ruleForm.date2
-          var depDate =d1.getFullYear() + '-' + (d1.getMonth()+1) + '-' +d1.getDate()
-          var arrDate =d2.getFullYear() + '-' + (d2.getMonth()+1) + '-' +d2.getDate()
-          //console.log(depDate)
-          //alert("submit!");
-          axios.get(baseUrl+'/plane/searchAirtickets',{
-            params:{
-              depCity: this.ruleForm.start,
-              arrCity: this.ruleForm.arrive,
-              depDate: depDate,
-              arrDate: arrDate,
-              planetype: this.ruleForm.planetype
-            }
-          })
-          .then((res) => {
-            console.log(res)
-          })
-          .catch((err) => {
-             console.log(err)
-          })
+          this.$router.push('manage')
+          alert("submit!");
         } else {
+          this.$router.push('manage')
           console.log("error submit!!");
           return false;
         }
@@ -203,3 +94,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.login_page {
+  margin: 180px auto;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  border: 1px solid #e70b0b;
+  box-shadow: 0px 4px 5px #666 2px 6px 10px #999;
+}
+</style>

@@ -36,6 +36,7 @@
 import headTop from "../components/headTop";
 import {axios,baseUrl} from "../api/api";
 import { location } from "../location";
+import qs from 'qs'
 
 export default {
   data() {
@@ -110,12 +111,19 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log('1999...')
-          axios.post(baseUrl+'/work/workregister',{
-              weixin: this.ruleForm.weixin,
-              phone: this.ruleForm.phone,
-              taobao: this.ruleForm.taobao,
-              location: this.ruleForm.location
+          console.log('1999...',this.ruleForm.weixin)
+          console.log('1998...',this.ruleForm.phone)
+          console.log('1997...',this.ruleForm.taobao)
+          let params={
+            weixin: this.ruleForm.weixin,
+            phone: this.ruleForm.phone,
+            taobao: this.ruleForm.taobao,
+            location: this.ruleForm.location
+          };
+          axios({
+            method: 'post',
+            url: baseUrl+'/work/workregister',
+            data: qs.stringify(params)
           })
           .then((res) => {
             console.log(res)

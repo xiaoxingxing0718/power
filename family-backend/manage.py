@@ -3,9 +3,11 @@
 
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from main import create_app, db
+from flask_sqlalchemy import SQLAlchemy
+from main import create_app
 
 app = create_app()
+db = SQLAlchemy(app)
 manager = Manager(app)
 migrate = Migrate(app, db)
 
