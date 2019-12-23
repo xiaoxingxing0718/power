@@ -4,8 +4,9 @@
 from flask import Blueprint, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+#from model import Register
 #from manage import db
-
+#db.create_all()
 
 work = Blueprint('work',__name__)
 
@@ -29,5 +30,9 @@ def workregister():
         engine = create_engine("mysql://root:@127.0.0.1:3306/family?charset=utf8")
         Session = sessionmaker(bind=engine)
         session = Session()
+
+        register = Register(weixin=weixin,phone=phone,taobao=taobao,localcation=location)
+        session.add(register)
+        session.commit()
 
     return 'start compute...'

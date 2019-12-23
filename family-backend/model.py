@@ -4,7 +4,6 @@
 from manage import db
 
 #db.drop_all()
-db.create_all()
 
 class Register(db.Model):
     __tablename__ = 'register'
@@ -22,3 +21,5 @@ class Register(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.weixin
+
+db.create_all()
